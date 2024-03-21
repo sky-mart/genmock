@@ -311,7 +311,21 @@ bool Mocker::TraverseCXXRecordDecl(clang::CXXRecordDecl* cl)
 {
     // TODO: go only if there are virtual methods
     if (!cl->hasDefinition()) {
-        // return true;
+        return true;
+    }
+
+    // TODO: change to the explicit parameter
+    bool noStaticMethods = true;
+    if (src_) {
+      for (const auto* method : cl->methods()) {
+        if (method->isStatic()) {
+          noStaticMethods = false;
+          break;
+        }
+      }
+      if (noStaticMethods) {
+        return true;
+      }
     }
 
     if (Stage::INCLUDES == stage_ || Stage::NAMESPACES == stage_)
